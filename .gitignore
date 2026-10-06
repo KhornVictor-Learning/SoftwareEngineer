@@ -1,25 +1,136 @@
 # ==========================================
-# Documents & Office Files (PDF, Word, Excel, PPT)
+# Maven / Java Build Output
 # ==========================================
+
+target/
+build/
+.gradle/
+bin/
+out/
+
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven generated files
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Maven Wrapper
+# Uncomment these if you don't want to commit Maven Wrapper files
+# .mvn/
+# mvnw
+# mvnw.cmd
+
+
+# ==========================================
+# IDE - IntelliJ IDEA
+# ==========================================
+
+.idea/
+*.iml
+*.iws
+*.ipr
+
+
+# ==========================================
+# IDE - Eclipse
+# ==========================================
+
+.classpath
+.project
+.settings/
+
+
+# ==========================================
+# IDE - VS Code
+# ==========================================
+
+.vscode/
+
+
+# ==========================================
+# IDE - NetBeans
+# ==========================================
+
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+
+# ==========================================
+# Operating System Files
+# ==========================================
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+
+# ==========================================
+# Logs & Temporary Files
+# ==========================================
+
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+
+
+# ==========================================
+# Java Crash Dumps
+# ==========================================
+
+hs_err_pid*
+replay_pid*
+
+
+# ==========================================
+# Databases & Backups
+# ==========================================
+
+*.sqlite
+*.sqlite3
+*.db
+*.bak
+*.dump
+*.sql.gz
+
+
+# ==========================================
+# Documents & Office Files
+# ==========================================
+
 *.pdf
 *.doc
 *.docx
 *.docm
 *.dotx
 *.dotm
+
 *.ppt
 *.pptx
 *.pptm
 *.potx
+
 *.xls
 *.xlsx
 *.xlsm
 *.xlsb
 *.xltx
+
 *.odt
 *.ods
 *.odp
 *.rtf
+
 *.pages
 *.numbers
 *.key
@@ -29,9 +140,11 @@
 ~$*.xls*
 ~$*.ppt*
 
+
 # ==========================================
 # Archives & Compressed Files
 # ==========================================
+
 *.zip
 *.tar
 *.tar.gz
@@ -44,9 +157,11 @@
 *.iso
 *.dmg
 
+
 # ==========================================
-# Media Files (Audio & Video)
+# Media Files
 # ==========================================
+
 *.mp4
 *.mov
 *.avi
@@ -54,6 +169,7 @@
 *.wmv
 *.flv
 *.webm
+
 *.mp3
 *.wav
 *.flac
@@ -61,7 +177,11 @@
 *.m4a
 *.ogg
 
-# Heavy Design & Raw Image Files
+
+# ==========================================
+# Design / Raw Image Files
+# ==========================================
+
 *.psd
 *.ai
 *.sketch
@@ -70,9 +190,11 @@
 *.tiff
 *.tif
 
+
 # ==========================================
-# Executables & Binaries
+# Executables & Native Binaries
 # ==========================================
+
 *.exe
 *.msi
 *.dll
@@ -83,40 +205,3 @@
 *.pkg
 *.deb
 *.rpm
-
-# ==========================================
-# Java & Build Output (Spring, Maven, Gradle)
-# ==========================================
-*.class
-*.jar
-*.war
-*.ear
-target/
-build/
-.gradle/
-bin/
-out/
-
-# ==========================================
-# Databases & Logs
-# ==========================================
-*.log
-*.sqlite
-*.sqlite3
-*.db
-*.bak
-*.dump
-*.sql.gz
-
-# ==========================================
-# Operating System & IDE Files
-# ==========================================
-.idea/
-*.iml
-.vscode/
-.project
-.classpath
-.settings/
-.DS_Store
-Thumbs.db
-desktop.ini

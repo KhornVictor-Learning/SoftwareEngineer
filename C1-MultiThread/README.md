@@ -15,7 +15,7 @@
 
 ---
 
-#### Key Learning Agenda & Core Concepts
+### Key Learning Agenda & Core Concepts
 
 1. **Processes vs Threads**: Operating system process separation (isolated address spaces) versus lightweight threads sharing heap memory with individual program counters, stacks, and registers.
 2. **Mechanisms of Thread Creation**:
@@ -63,4 +63,3 @@
 - 📚 **[Full Course Study Guide](../study_guide.md)**
 - 📝 **[Full Quiz Master (120 Questions)](../quiz_prep.md)**
 - ➡️ **Next Module**: [Chapter 02: C2-Spring Framework](../C2-Spring%20Framework/README.md)
-
