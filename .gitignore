@@ -1,0 +1,122 @@
+# ==========================================
+# Documents & Office Files (PDF, Word, Excel, PPT)
+# ==========================================
+*.pdf
+*.doc
+*.docx
+*.docm
+*.dotx
+*.dotm
+*.ppt
+*.pptx
+*.pptm
+*.potx
+*.xls
+*.xlsx
+*.xlsm
+*.xlsb
+*.xltx
+*.odt
+*.ods
+*.odp
+*.rtf
+*.pages
+*.numbers
+*.key
+
+# Microsoft Office temporary lock files
+~$*.doc*
+~$*.xls*
+~$*.ppt*
+
+# ==========================================
+# Archives & Compressed Files
+# ==========================================
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.iso
+*.dmg
+
+# ==========================================
+# Media Files (Audio & Video)
+# ==========================================
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wmv
+*.flv
+*.webm
+*.mp3
+*.wav
+*.flac
+*.aac
+*.m4a
+*.ogg
+
+# Heavy Design & Raw Image Files
+*.psd
+*.ai
+*.sketch
+*.fig
+*.raw
+*.tiff
+*.tif
+
+# ==========================================
+# Executables & Binaries
+# ==========================================
+*.exe
+*.msi
+*.dll
+*.so
+*.dylib
+*.bin
+*.app
+*.pkg
+*.deb
+*.rpm
+
+# ==========================================
+# Java & Build Output (Spring, Maven, Gradle)
+# ==========================================
+*.class
+*.jar
+*.war
+*.ear
+target/
+build/
+.gradle/
+bin/
+out/
+
+# ==========================================
+# Databases & Logs
+# ==========================================
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.bak
+*.dump
+*.sql.gz
+
+# ==========================================
+# Operating System & IDE Files
+# ==========================================
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+.DS_Store
+Thumbs.db
+desktop.ini
