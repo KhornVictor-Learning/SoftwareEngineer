@@ -60,11 +60,11 @@ flowchart LR
         C2["Consumer 2"]
     end
 
-    P0 -->|put(Order)| B
-    P1 -->|put(Order)| B
-    B -->|take()| C0
-    B -->|take()| C1
-    B -->|take()| C2
+    P0 -->|"put(Order)"| B
+    P1 -->|"put(Order)"| B
+    B -->|"take()"| C0
+    B -->|"take()"| C1
+    B -->|"take()"| C2
 
     subgraph Shutdown ["Shutdown Mechanism"]
         PP["Poison Pills<br/>Order(-1, 'POISON', 0)"]
