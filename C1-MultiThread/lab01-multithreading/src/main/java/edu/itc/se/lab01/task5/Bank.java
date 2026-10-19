@@ -1,5 +1,8 @@
 package edu.itc.se.lab01.task5;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Bank {
@@ -20,7 +23,40 @@ public class Bank {
         }
     }
 
+    static void startDeadlockWatchdog() {
+        Thread watchdog = new Thread(() -> {
+            ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                    long[] deadlocked = bean.findDeadlockedThreads();
+                    if (deadlocked != null && deadlocked.length > 0) {
+                        System.err.println("\n[DEADLOCK WATCHDOG] Deadlock detected among " 
+                                + deadlocked.length + " thread(s)!");
+                        ThreadInfo[] infos = bean.getThreadInfo(deadlocked, true, true);
+                        for (ThreadInfo info : infos) {
+                            System.err.printf("[WATCHDOG] Thread '%s' (id=%d, state=%s) waiting for lock '%s' held by '%s'%n",
+                                    info.getThreadName(),
+                                    info.getThreadId(),
+                                    info.getThreadState(),
+                                    info.getLockName(),
+                                    info.getLockOwnerName());
+                        }
+                        System.err.println("[WATCHDOG] Use 'jstack <pid>' to inspect the full thread dump.\n");
+                        break;
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }, "deadlock-watchdog");
+        watchdog.setDaemon(true);
+        watchdog.start();
+    }
+
     public static void main(String[] args) throws InterruptedException {
+        startDeadlockWatchdog();
         Account[] accounts = new Account[4];
         for (int i = 0; i < accounts.length; i++) accounts[i] = new Account(i, 1_000);
 

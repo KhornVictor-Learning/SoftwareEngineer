@@ -139,9 +139,51 @@ public class BoundedBuffer implements OrderQueue {
 - **`while` Guard Condition**:
   - `while (items.size() == capacity) wait();` in `put()`.
   - `while (items.isEmpty()) wait();` in `take()`.
-  > [!IMPORTANT]
-  > Always use `while` instead of `if` when testing the condition before calling `wait()`. This guards against **spurious wakeups** and prevents race conditions where another thread woke up and grabbed the lock first.
-- **`notifyAll()`**: Wakes up all threads waiting on this buffer's monitor lock, ensuring waiting consumers or producers can re-evaluate their condition and proceed.
+
+---
+
+### ⚠️ Concurrency Traps: Why `if` and `notify()` Fail
+
+#### Trap 1: Why testing with `if` instead of `while` causes crashes / corruption
+
+```java
+// DANGEROUS BUG! DO NOT USE 'if':
+if (items.isEmpty()) {
+    wait();
+}
+Order order = items.removeFirst(); // May throw NoSuchElementException!
+```
+
+**Step-by-Step Failure Scenario**:
+1. Buffer is currently **empty**. Two consumer threads, **Consumer A** and **Consumer B**, both call `take()`. Both see `isEmpty() == true` and enter `wait()`.
+2. A producer calls `put()` with **1 item**, inserts it, and invokes `notifyAll()`.
+3. Both Consumer A and Consumer B are moved to the `BLOCKED` monitor queue.
+4. Consumer A acquires the lock first, returns from `wait()`, calls `items.removeFirst()`, processes the item, and exits the synchronized method. The buffer is now **empty** again!
+5. Consumer B now acquires the monitor. **Because Consumer B used `if`**, its execution resumes on the line immediately following `wait()`. It does **not** re-check if items exist!
+6. Consumer B unconditionally calls `items.removeFirst()` on an empty `ArrayDeque`, triggering an immediate **`NoSuchElementException`** and crashing the worker!
+7. **The Fix**: `while (items.isEmpty()) wait();` forces Consumer B to re-evaluate the condition upon waking. Seeing the buffer is empty, Consumer B safely puts itself back to sleep until another item arrives.
+
+---
+
+#### Trap 2: Why `notify()` instead of `notifyAll()` causes permanent Deadlock ("Lost Notification")
+
+```java
+// DANGEROUS BUG! DO NOT USE 'notify()' in MPMC queues:
+items.addLast(order);
+notify(); // May wake the WRONG thread type!
+```
+
+**Step-by-Step Failure Scenario**:
+1. Consider a bounded buffer of capacity 1 with 2 Producers ($P_1, P_2$) and 2 Consumers ($C_1, C_2$).
+2. The buffer is full (1 item). Both $P_1$ and $P_2$ call `put()`, see capacity is full, and enter `wait()`.
+3. $C_1$ calls `take()`, removes the 1 item (buffer is now empty), and calls `notify()`.
+4. Inside the JVM's monitor wait set, $P_1, P_2$, and potentially $C_2$ (if it called `take()` when empty) are all waiting in the **same single wait set**.
+5. When `notify()` is invoked, the JVM selects **only one thread arbitrarily**.
+6. **The Disaster**: The JVM selects $C_2$ instead of $P_1$ or $P_2$!
+7. $C_2$ wakes up, checks `items.isEmpty()`, sees the buffer is still empty (because $P_1$ and $P_2$ never ran to produce), and calls `wait()`.
+8. Now, $P_1$ is waiting, $P_2$ is waiting, $C_2$ is waiting, and $C_1$ finishes its task and eventually calls `take()` and waits too.
+9. **Result**: **All threads in the entire system are now stuck in the `WAITING` state.** No thread is alive to wake them. The program suffers a complete, unrecoverable **deadlock**!
+10. **The Fix**: `notifyAll()` wakes **every** thread in the wait set. Even if $C_2$ wakes up and sees an empty queue, $P_1$ and $P_2$ also wake up, recognize space is available, and proceed to fill the buffer.
 
 ---
 

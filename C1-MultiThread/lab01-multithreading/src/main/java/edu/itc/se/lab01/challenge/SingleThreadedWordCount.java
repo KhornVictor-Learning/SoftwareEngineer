@@ -9,21 +9,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-/**
- * Single-threaded reference implementation of the word-frequency analyser.
- * Used as a baseline oracle for correctness verification in JUnit tests.
- */
 public class SingleThreadedWordCount {
 
     private static final Pattern NON_LETTERS = Pattern.compile("[^\\p{L}]+");
-
-    /**
-     * Walks {@code dir} sequentially, counting words in all regular files.
-     *
-     * @param dir Directory to analyze
-     * @return Map of word to total occurrence count
-     * @throws IOException If an I/O error occurs walking the directory
-     */
     public static Map<String, Long> count(Path dir) throws IOException {
         Map<String, Long> counts = new HashMap<>();
         try (Stream<Path> stream = Files.walk(dir)) {

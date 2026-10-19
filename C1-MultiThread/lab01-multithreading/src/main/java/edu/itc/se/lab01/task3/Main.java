@@ -28,7 +28,7 @@ public class Main {
                 i,
                 queue,
                 processedCount
-            ));
+            ), "consumer-" + i);
             consumers[i].start();
         }
 
@@ -40,7 +40,7 @@ public class Main {
                 consumerCount,
                 queue,
                 finishedProducers
-            ));
+            ), "producer-" + i);
             producers[i].start();
         }
 

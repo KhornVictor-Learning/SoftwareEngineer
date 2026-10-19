@@ -123,6 +123,31 @@ public class UnsafeCounter implements Counter {
 
 ---
 
+### 💡 The Memory Visibility & `volatile` Question
+
+> **Lab Core Question**: *Would declaring `private volatile long count = 0;` fix the race condition in `UnsafeCounter`? Why or why not?*
+
+**Answer: No, `volatile` will NOT fix this race condition.**
+
+#### Detailed Technical Explanation:
+1. **Visibility vs. Atomicity**:
+   - `volatile` guarantees **Memory Visibility**: any write to a volatile variable is immediately flushed to main memory, and any read bypasses CPU caches to read the latest value directly from main memory. It also establishes happens-before ordering and prevents compiler reordering.
+   - However, `volatile` provides **zero atomicity** for compound actions.
+2. **Compound Non-Atomic Execution**:
+   - As shown above, `count++` is not a single CPU operation; it is a compound **Read-Modify-Write** sequence:
+     $$\text{Read } (count) \longrightarrow \text{Modify } (+1) \longrightarrow \text{Write } (count)$$
+3. **The Race Window**:
+   - Even if `count` is `volatile`, Thread 1 reads `count` (say, `42`).
+   - Before Thread 1 can execute `ladd` and write the result back, Thread 2 also reads `count` from main memory (still `42`).
+   - Thread 1 writes `43` to memory (visible immediately).
+   - Thread 2 writes `43` to memory (visible immediately).
+   - **Result**: Even though visibility was perfect and both writes hit main memory immediately, one increment was completely lost!
+4. **When to use `volatile`**:
+   - Use `volatile` only for state flags or single-step operations where the new value does *not* depend on the previous value (e.g., `boolean stopRequested = true;` or `volatile Reference config;`).
+   - For read-modify-write accumulators, you **must** use mutual exclusion (`synchronized`, `ReentrantLock`), hardware CAS (`AtomicLong`), or striped cells (`LongAdder`).
+
+---
+
 ### 3. [`SynchronizedCounter`](src/functions/SynchronizedCounter.java) *(Intrinsic Monitor)*
 ```java
 public class SynchronizedCounter implements Counter {

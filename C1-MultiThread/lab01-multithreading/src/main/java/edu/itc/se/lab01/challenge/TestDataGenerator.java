@@ -11,11 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Helper to generate synthetic test datasets for the parallel word-frequency analyser.
- * Default scenario writes 200 files of ~50,000 random words each reusing a 2,000-word vocabulary
- * with Zipfian-like distribution (frequent words like 'the', 'and', 'of' appear most often).
- */
 public class TestDataGenerator {
 
     private static final String[] BASE_WORDS = {
@@ -32,10 +27,6 @@ public class TestDataGenerator {
         "should", "because", "each", "just", "those", "people", "mr", "how", "too", "little"
     };
 
-    /**
-     * Builds a vocabulary of {@code vocabSize} words, seeded with common English words
-     * and padded with synthetic identifiers.
-     */
     public static List<String> buildVocabulary(int vocabSize) {
         List<String> vocab = new ArrayList<>(vocabSize);
         for (String w : BASE_WORDS) {
@@ -60,9 +51,6 @@ public class TestDataGenerator {
         return sb.toString();
     }
 
-    /**
-     * Precomputes cumulative probability distribution for Zipf's law (s ~ 1.0).
-     */
     private static double[] computeZipfCdf(int n, double s) {
         double[] cdf = new double[n];
         double sum = 0.0;
@@ -78,9 +66,6 @@ public class TestDataGenerator {
         return cdf;
     }
 
-    /**
-     * Samples an index [0, n-1] following the precomputed CDF.
-     */
     private static int sampleZipf(double[] cdf, Random random) {
         double r = random.nextDouble();
         int low = 0, high = cdf.length - 1;
@@ -95,9 +80,6 @@ public class TestDataGenerator {
         return low;
     }
 
-    /**
-     * Generates {@code fileCount} files with ~{@code wordsPerFile} words each in {@code targetDir}.
-     */
     public static void generate(Path targetDir, int fileCount, int wordsPerFile, int vocabSize, long seed) throws IOException {
         Files.createDirectories(targetDir);
         List<String> vocab = buildVocabulary(vocabSize);

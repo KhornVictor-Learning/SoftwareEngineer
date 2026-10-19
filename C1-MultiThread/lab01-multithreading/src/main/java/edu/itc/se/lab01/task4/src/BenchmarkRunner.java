@@ -18,7 +18,7 @@ public class BenchmarkRunner {
             int ok = 0, failed = 0, timedOut = 0;
             for (Future<String> future : futures) {
                 try {
-                    future.get(1, java.util.concurrent.TimeUnit.SECONDS);
+                    future.get(timeoutSeconds, java.util.concurrent.TimeUnit.SECONDS);
                     ok++;
                 } catch (java.util.concurrent.TimeoutException e) {
                     timedOut++;

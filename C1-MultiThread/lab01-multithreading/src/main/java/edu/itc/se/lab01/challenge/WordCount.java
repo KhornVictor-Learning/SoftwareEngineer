@@ -27,15 +27,6 @@ import java.util.concurrent.atomic.LongAdder;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-/**
- * High-performance parallel word-frequency analyser.
- * Features:
- * - Single scanner thread feeding a bounded BlockingQueue (capacity 16) for back-pressure
- * - N worker threads (platform or virtual) with lock-free updates to ConcurrentHashMap & LongAdder
- * - Non-blocking progress reporter printing status every 500 ms without acquiring whole-map locks
- * - Clean cancellation handling via shutdown hook and timeout deadline, printing [PARTIAL] results
- * - Automatic generation of sorted top-N console report and result.csv export
- */
 public class WordCount {
     private final BlockingQueue<Path> queue = new ArrayBlockingQueue<>(16);
     private final ConcurrentHashMap<String, LongAdder> counts = new ConcurrentHashMap<>();
@@ -301,10 +292,6 @@ public class WordCount {
         System.out.println("result.csv written");
     }
 
-    /**
-     * Extracts top N entries without locking the entire map.
-     * Uses min-heap bounded at N elements while iterating the weakly consistent entrySet.
-     */
     private List<Map.Entry<String, Long>> getTopWords(int n) {
         if (counts.isEmpty() || n <= 0) return List.of();
         PriorityQueue<Map.Entry<String, Long>> pq = new PriorityQueue<>(
@@ -328,9 +315,6 @@ public class WordCount {
         return list;
     }
 
-    /**
-     * Returns a snapshot of accumulated word counts (for test verification).
-     */
     public Map<String, Long> getWordCounts() {
         Map<String, Long> snapshot = new HashMap<>();
         counts.forEach((k, v) -> snapshot.put(k, v.sum()));

@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class CompletableFutureRunner {
-    public static BenchmarkResult runAsyncDowmload(String label, ExecutorService executor, int taskCount, long timeoutSeconds) throws Exception {
+    public static BenchmarkResult runAsyncDownload(String label, ExecutorService executor, int taskCount, long timeoutSeconds) throws Exception {
         long t0 = System.nanoTime();
         List<CompletableFuture<String>> futures = new ArrayList<>(taskCount);
 
@@ -52,7 +52,10 @@ public class CompletableFutureRunner {
                 } catch (TimeoutException e) {
                     timedOut++;
                     completableFuture.cancel(true);
-                } catch (InterruptedException | ExecutionException e) {
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    failed++;
+                } catch (ExecutionException e) {
                     failed++;
                 }
             }
@@ -60,5 +63,9 @@ public class CompletableFutureRunner {
             long elapsedMs = (System.nanoTime() - t0) / 1_000_000;
             return new BenchmarkResult(label, ok, failed, timedOut, elapsedMs);
         }
+    }
+
+    public static BenchmarkResult runAsyncDowmload(String label, ExecutorService executor, int taskCount, long timeoutSeconds) throws Exception {
+        return runAsyncDownload(label, executor, taskCount, timeoutSeconds);
     }
 }
